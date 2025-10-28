@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300684A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2c-2.5 3.5-2.5 8.5 0 12' /%3E%3Cpath d='M12 2c2.5 3.5 2.5 8.5 0 12' /%3E%3Cpath d='M12 22V14' /%3E%3Cpath d='M8 10c-2 2-4 4-4 6' /%3E%3Cpath d='M16 10c2 2 4 4 4 6' /%3E%3C/svg%3E" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Comendo Saudável</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        background-color: #FBFBF6;
+        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+      }
+      .gradient-text {
+        background-image: linear-gradient(to right, #00684A, #00A375);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+    </style>
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "https://esm.sh/react@18.2.0",
+          "react-dom/client": "https://esm.sh/react-dom@18.2.0/client"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      import React, { useState, useEffect } from 'react';
+      import ReactDOM from 'react-dom/client';
+
+      // --- Icons ---
+      const WheatIcon = ({ className }) => (
+        React.createElement('svg', { className, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" },
+          React.createElement('path', { d: "M12 2c-2.5 3.5-2.5 8.5 0 12" }),
+          React.createElement('path', { d: "M12 2c2.5 3.5 2.5 8.5 0 12" }),
+          React.createElement('path', { d: "M12 22V14" }),
+          React.createElement('path', { d: "M8 10c-2 2-4 4-4 6" }),
+          React.createElement('path', { d: "M16 10c2 2 4 4 4 6" })
+        )
+      );
+      const MenuIcon = ({ className }) => (
+        React.createElement('svg', { className, fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" },
+          React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "2", d: "M4 6h16M4 12h16m-7 6h7" })
+        )
+      );
+      const CartIcon = ({ className }) => (
+        React.createElement('svg', { className, fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" },
+          React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "2", d: "M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" })
+        )
+      );
+      const LeafIcon = ({ className }) => (
+        React.createElement('svg', { className, fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" },
+          React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "2", d: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" })
+        )
+      );
+      const ZapIcon = ({ className }) => (
+        React.createElement('svg', { className, fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" },
+          React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "2", d: "M13 10V3L4 14h7v7l9-11h-7z" })
+        )
+      );
+      const SmileIcon = ({ className }) => (
+        React.createElement('svg', { className, fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" },
+          React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "2", d: "M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" })
+        )
+      );
+      const CheckCircle = ({ className }) => (
+        React.createElement('svg', { className, fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" },
+          React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "2", d: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" })
+        )
+      );
+      const BookOpenIcon = ({ className }) => (
+        React.createElement('svg', { className, fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" },
+          React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "2", d: "M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13c-1.168.777-2.754 1.253-4.5 1.253-1.746 0-3.332-.477-4.5-1.253" })
+        )
+      );
+      const UtensilsIcon = ({ className }) => (
+        React.createElement('svg', { className, fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" },
+          React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "2", d: "M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" }),
+          React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "2", d: "M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" })
+        )
+      );
+      const CookieIcon = ({ className }) => (
+        React.createElement('svg', { className, fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" },
+          React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "2", d: "M12 21a9 9 0 100-18 9 9 0 000 18z" }),
+          React.createElement('circle', { cx: "10", cy: "10", r: "1", fill: "currentColor" }),
+          React.createElement('circle', { cx: "14", cy: "9", r: "1", fill: "currentColor" }),
+          React.createElement('circle', { cx: "15", cy: "14", r: "1", fill: "currentColor" }),
+          React.createElement('circle', { cx: "9", cy: "15", r: "1", fill: "currentColor" })
+        )
+      );
+      const ShoppingBagIcon = ({ className }) => (
+        React.createElement('svg', { className, fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" },
+          React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "2", d: "M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" })
+        )
+      );
+      const CalendarIcon = ({ className }) => (
+        React.createElement('svg', { className, fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" },
+          React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "2", d: "M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" })
+        )
+      );
+      const LightbulbIcon = ({ className }) => (
+        React.createElement('svg', { className, fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" },
+          React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "2", d: "M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" })
+        )
+      );
+      const UserCheckIcon = ({ className = "h-6 w-6 text-[#00684A]" }) => (
+          React.createElement('svg', { xmlns: "http://www.w3.org/2000/svg", className: className, fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" },
+              React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" }),
+              React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zm1.5 6.33L21 21" })
+          )
+      );
+      const StarIcon = ({ className = "h-6 w-6 text-yellow-400" }) => (
+          React.createElement('svg', { xmlns: "http://www.w3.org/2000/svg", className: className, viewBox: "0 0 20 20", fill: "currentColor" },
+              React.createElement('path', { d: "M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" })
+          )
+      );
+      const ShieldCheckIcon = ({ className = "h-6 w-6" }) => (
+          React.createElement('svg', { xmlns: "http://www.w3.org/2000/svg", className: className, fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" },
+              React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 20.955a12.02 12.02 0 009 2.045 12.02 12.02 0 009-2.045c0-2.622-.68-5.11-1.905-7.238A11.952 11.952 0 0118.618 5.984z" })
+          )
+      );
+
+      // --- Components ---
+      const Header = () => {
+        return React.createElement('header', { className: "sticky top-0 bg-[#FBFBF6]/80 backdrop-blur-sm z-50 shadow-sm" },
+          React.createElement('div', { className: "container mx-auto px-6 py-4 flex justify-between items-center" },
+            React.createElement('div', { className: "flex items-center space-x-2" },
+              React.createElement(WheatIcon, { className: "w-8 h-8 text-[#00684A]" }),
+              React.createElement('span', { className: "text-xl font-bold text-[#00684A]" }, "Comendo Saudável")
+            ),
+            React.createElement('button', { 'aria-label': "Menu" },
+              React.createElement(MenuIcon, { className: "w-8 h-8 text-[#00684A]" })
+            )
+          )
+        );
+      };
+
+      const Hero = () => {
+        return React.createElement('section', { className: "text-center py-16 px-6" },
+          React.createElement('h1', { className: "text-4xl sm:text-5xl md:text-6xl font-bold text-[#00684A] leading-tight" },
+            "Você Não Precisa ", React.createElement('br', null),
+            React.createElement('span', { className: "text-5xl sm:text-6xl md:text-7xl" }, "Passar Vontade")
+          ),
+          React.createElement('h2', { className: "mt-4 text-3xl sm:text-4xl md:text-5xl font-semibold text-gray-700" }, "Coma Pães, Bolos e Doces Sem Medo"),
+          React.createElement('p', { className: "mt-6 max-w-xl mx-auto text-lg md:text-xl text-gray-600" }, "Coma o que você ama sem medo de glúten, lactose ou açúcar e mantenha seu corpo equilibrado."),
+          React.createElement('a', { href: "https://dashboard.render.com/", target: "_blank", rel: "noopener noreferrer", className: "inline-block mt-8 bg-[#00684A] text-white font-bold text-xl py-4 px-10 rounded-full shadow-lg transition-transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green-300" }, "Quero Começar Agora")
+        );
+      };
+
+      const testimonialsData = [
+        { name: "Mariana R.", location: "Belo Horizonte", quote: "Eu era apaixonada por bolos, mas vivia passando mal. Depois que comecei a usar as receitas do eBook, nunca mais tive crises — e ainda emagreci 4kg sem perceber! Hoje faço os pães todos os domingos pra minha família ❤️", avatarUrl: "https://picsum.photos/seed/mariana/100/100" },
+        { name: "Rita A.", location: "São Paulo", quote: "Sou diabética há 7 anos e achava que nunca mais ia comer um pudim. Agora tenho sobremesas seguras e deliciosas toda semana. Minha glicose está controlada e minha médica ficou surpresa!", avatarUrl: "https://picsum.photos/seed/rita/100/100" },
+        { name: "Fernanda P.", location: "Curitiba", quote: "Não acreditava que fosse gostar. Mas essas receitas realmente parecem as originais — até meu marido se apaixonou pelos bolos sem glúten!", avatarUrl: "https://picsum.photos/seed/fernanda/100/100" },
+      ];
+
+      const StarRating = ({ rating }) => React.createElement('div', { className: "flex" },
+        [...Array(rating)].map((_, i) => React.createElement('svg', { key: i, className: "w-5 h-5 text-yellow-400", fill: "currentColor", viewBox: "0 0 20 20" },
+          React.createElement('path', { d: "M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" })
+        ))
+      );
+
+      const QuoteIcon = () => React.createElement('svg', { className: "w-16 h-16 text-green-100 absolute -top-4 -left-4 z-0", viewBox: "0 0 24 24", fill: "currentColor" },
+        React.createElement('text', { x: "1", y: "22", fontFamily: "serif", fontSize: "30", fill: "#00684A", transform: "rotate(15 5 20)" }, '"')
+      );
+
+      const TestimonialCard = ({ name, location, quote, avatarUrl }) => React.createElement('div', { className: "relative mt-12" },
+        React.createElement('div', { className: "flex items-center mb-4" },
+          React.createElement('img', { src: avatarUrl, alt: name, className: "w-16 h-16 rounded-full shadow-md mr-4" }),
+          React.createElement('div', null,
+            React.createElement('h4', { className: "font-bold text-lg" }, name),
+            React.createElement('p', { className: "text-gray-500" }, location),
+            React.createElement(StarRating, { rating: 5 })
+          )
+        ),
+        React.createElement('div', { className: "relative" },
+          React.createElement(QuoteIcon, null),
+          React.createElement('p', { className: "relative z-10 text-lg text-gray-700 leading-relaxed pl-4" }, quote)
+        )
+      );
+
+      const Testimonials = () => {
+        return React.createElement('section', { className: "bg-white/50 py-16 px-6" },
+          React.createElement('div', { className: "text-center" },
+            React.createElement('h2', { className: "text-4xl md:text-5xl font-bold text-[#00684A]" },
+              "Resultados Reais de Quem ", React.createElement('br', null), " Já Mudou a Alimentação"
+            )
+          ),
+          React.createElement('div', { className: "mt-8 max-w-lg mx-auto space-y-12" },
+            testimonialsData.map((testimonial) => React.createElement(TestimonialCard, { key: testimonial.name, ...testimonial }))
+          )
+        );
+      };
+      
+      const Footer = () => {
+          return React.createElement('footer', { className: "bg-[#1E202B] text-white" },
+              React.createElement('div', { className: "container mx-auto px-6 py-12" },
+                  React.createElement('div', { className: "flex items-center space-x-2" },
+                      React.createElement(WheatIcon, { className: "w-8 h-8" }),
+                      React.createElement('span', { className: "text-xl font-bold" }, "Comendo Saudável")
+                  ),
+                  React.createElement('p', { className: "mt-2 text-gray-400" }, "Descubra o prazer de comer bem."),
+                  React.createElement('div', { className: "mt-8 grid grid-cols-2 gap-8" },
+                      React.createElement('div', null,
+                          React.createElement('h3', { className: "font-bold tracking-wider uppercase" }, "Navegação"),
+                          React.createElement('ul', { className: "mt-4 space-y-2 text-gray-400" },
+                              React.createElement('li', null, React.createElement('a', { href: "#", className: "hover:text-white" }, "A Promessa")),
+                              React.createElement('li', null, React.createElement('a', { href: "#", className: "hover:text-white" }, "Receitas")),
+                              React.createElement('li', null, React.createElement('a', { href: "#", className: "hover:text-white" }, "Depoimentos")),
+                              React.createElement('li', null, React.createElement('a', { href: "#", className: "hover:text-white" }, "Bônus"))
+                          )
+                      ),
+                      React.createElement('div', null,
+                          React.createElement('h3', { className: "font-bold tracking-wider uppercase" }, "Contato"),
+                          React.createElement('ul', { className: "mt-4 space-y-2 text-gray-400" },
+                              React.createElement('li', { className: "flex items-center" },
+                                  React.createElement('svg', { className: "w-5 h-5 mr-2", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "2", d: "M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" })),
+                                  React.createElement('a', { href: "mailto:suporte@comendosaudavel.com", className: "hover:text-white" }, "suporte@comendosaudavel.com")
+                              )
+                          )
+                      )
+                  ),
+                  React.createElement('div', { className: "mt-12 border-t border-gray-700 pt-8 text-center text-gray-500 text-sm" },
+                      React.createElement('p', null, "© 2024 Receitas de Verdade. Todos os direitos reservados."),
+                      React.createElement('div', { className: "mt-2" },
+                          React.createElement('a', { href: "#", className: "hover:text-white" }, "Política de Privacidade"),
+                          React.createElement('span', { className: "mx-2" }, "·"),
+                          React.createElement('a', { href: "#", className: "hover:text-white" }, "Termos de Uso")
+                      )
+                  )
+              )
+          );
+      };
+
+      const StickyCTA = () => {
+        const [isVisible, setIsVisible] = useState(false);
+        useEffect(() => {
+          const toggleVisibility = () => {
+            if (window.scrollY > 300) setIsVisible(true);
+            else setIsVisible(false);
+          };
+          window.addEventListener('scroll', toggleVisibility);
+          return () => window.removeEventListener('scroll', toggleVisibility);
+        }, []);
+
+        if (!isVisible) return null;
+
+        return React.createElement('div', { className: "fixed bottom-0 left-0 right-0 p-4 z-50" },
+          React.createElement('a', { href: "https://dashboard.render.com/", target: "_blank", rel: "noopener noreferrer", className: "w-full bg-[#00684A] text-white font-bold text-lg py-3 px-6 rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-105" },
+            React.createElement(CartIcon, { className: "w-6 h-6 mr-2" }),
+            "Quero Começar Agora"
+          )
+        );
+      };
+
+      const BonusCard = ({ icon, title, description }) => (
+          React.createElement('div', { className: "bg-gradient-to-br from-green-50 to-white p-8 rounded-2xl shadow-lg relative" },
+              React.createElement('span', { className: "absolute top-0 -mt-3 bg-[#00684A] text-white text-xs font-bold px-3 py-1 rounded-full" }, "GRÁTIS"),
+              React.createElement('div', { className: "bg-[#00684A] text-white rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4" }, icon),
+              React.createElement('h3', { className: "text-2xl font-bold text-[#00684A]" }, title),
+              React.createElement('p', { className: "mt-2 text-gray-600" }, description)
+          )
+      );
+
+      // --- Main App Component ---
+      const App = () => {
+        return React.createElement('div', { className: "bg-[#FBFBF6] text-[#3A3A3A] font-sans" },
+          React.createElement(Header, null),
+          React.createElement('main', { className: "overflow-x-hidden" },
+            React.createElement(Hero, null),
+            React.createElement('section', { className: "py-12 px-6 text-center" },
+                React.createElement('img', { src: "https://images.unsplash.com/photo-1676407784599-b611895a60c1", alt: "Paisagem toscana ao amanhecer", className: "rounded-lg shadow-lg mx-auto w-full max-w-md" })
+            ),
+            React.createElement('section', { className: "py-12 px-6 text-center" },
+              React.createElement('h2', { className: "text-3xl md:text-4xl font-bold text-[#00684A] leading-tight" }, "Você adora doces e pães... mas cada mordida vem acompanhada de medo e culpa. Até quando vai se privar do que ama?"),
+              React.createElement('p', { className: "mt-6 text-lg md:text-xl text-[#00684A]" }, "Quem tem intolerância ou sensibilidade sabe como é difícil... ", React.createElement('br', null), " Mas você não precisa abrir mão do prazer de comer bem."),
+              React.createElement('img', { src: "https://images.unsplash.com/photo-1513897601915-63bb5f2b5587", alt: "Close-up do capô de um carro antigo e enferrujado", className: "rounded-lg shadow-lg mx-auto w-full max-w-md mt-8" })
+            ),
+            React.createElement('section', { className: "py-12 px-6 text-center" },
+                React.createElement('h2', { className: "text-4xl md:text-5xl font-bold text-[#00684A]" }, "Imagine comer bem e se sentir leve"),
+                React.createElement('p', { className: "mt-4 text-lg text-gray-600" }, "São receitas desenvolvidas especialmente para quem quer:"),
+                React.createElement('ul', { className: "mt-8 space-y-6 text-left max-w-md mx-auto" },
+                    React.createElement('li', { className: "flex items-center text-xl" }, React.createElement(LeafIcon, { className: "w-8 h-8 mr-4 text-[#00684A]" }), React.createElement('span', null, "Controlar a glicose sem sacrifício")),
+                    React.createElement('li', { className: "flex items-center text-xl" }, React.createElement(ZapIcon, { className: "w-8 h-8 mr-4 text-[#00684A]" }), React.createElement('span', null, "Reduzir desconfortos e inflamações")),
+                    React.createElement('li', { className: "flex items-center text-xl" }, React.createElement(SmileIcon, { className: "w-8 h-8 mr-4 text-[#00684A]" }), React.createElement('span', null, "Redescobrir o prazer da comida caseira")),
+                    React.createElement('li', { className: "flex items-center text-xl" }, React.createElement(CheckCircle, { className: "w-8 h-8 mr-4 text-[#00684A]" }), React.createElement('span', null, "Ter um estilo de vida leve e equilibrado"))
+                ),
+                React.createElement('p', { className: "mt-8 text-lg text-gray-700 max-w-xl mx-auto" }, "Tudo em um só eBook completo, simples e saboroso.")
+            ),
+            React.createElement('section', { className: "py-12 px-6 text-center" },
+                React.createElement('h2', { className: "text-4xl md:text-5xl font-bold text-[#00684A]" }, "Inspire-se com o que te espera"),
+                React.createElement('p', { className: "mt-4 text-lg text-gray-600 max-w-xl mx-auto" }, "Tudo feito com ingredientes simples e naturais — perfeitos para o seu dia a dia."),
+                React.createElement('div', { className: "mt-8 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto" },
+                    React.createElement('div', { className: "grid gap-4" },
+                        React.createElement('img', { className: "h-auto max-w-full rounded-lg shadow-lg", alt: "Pão de aveia quentinho e fatiado", src: "https://images.unsplash.com/photo-1469715863913-ae228b12d1c2" }),
+                        React.createElement('img', { className: "h-auto max-w-full rounded-lg shadow-lg", alt: "Torta de cacau e banana em fatias", src: "https://images.unsplash.com/photo-1586248270648-552cf2c4567c" })
+                    ),
+                    React.createElement('div', { className: "grid gap-4" },
+                        React.createElement('img', { className: "h-auto max-w-full rounded-lg shadow-lg", alt: "Pudim de chia com frutas vermelhas em uma taça", src: "https://images.unsplash.com/photo-1620429194460-410b7a87d785" }),
+                        React.createElement('img', { className: "h-auto max-w-full rounded-lg shadow-lg", alt: "Bolo de cenoura com cobertura funcional", src: "https://images.unsplash.com/photo-1695933439107-09021ad8c607" })
+                    ),
+                    React.createElement('div', { className: "grid gap-4" },
+                        React.createElement('img', { className: "h-auto max-w-full rounded-lg shadow-lg", alt: "Panquecas com frutas frescas e melado", src: "https://images.unsplash.com/photo-1550438599-02ee850a5e6b" }),
+                        React.createElement('img', { className: "h-auto max-w-full rounded-lg shadow-lg", alt: "Muffins saudáveis de blueberry", src: "https://images.unsplash.com/photo-1636979766369-fbad35fa1630" })
+                    ),
+                    React.createElement('div', { className: "grid gap-4" },
+                        React.createElement('img', { className: "h-auto max-w-full rounded-lg shadow-lg", alt: "Cookies crocantes sem glúten em um prato", src: "https://images.unsplash.com/photo-1669018559086-b31b9efd7f62" }),
+                        React.createElement('img', { className: "h-auto max-w-full rounded-lg shadow-lg", alt: "Salada colorida e saudável em uma tigela", src: "https://images.unsplash.com/photo-1678317217143-82c26d7d56ed" })
+                    )
+                )
+            ),
+            React.createElement(Testimonials, null),
+            React.createElement('section', { className: "py-16 px-6 text-center" },
+                React.createElement('h2', { className: "text-4xl md:text-5xl font-bold text-[#00684A]" }, "Recomendado por Profissionais"),
+                React.createElement('p', { className: "mt-4 text-lg text-gray-600 max-w-xl mx-auto" }, "Aprovado por mais de 1.200 leitoras e recomendado por nutricionistas."),
+                React.createElement('div', { className: "mt-10 relative max-w-xs mx-auto" },
+                    React.createElement('div', { className: "absolute inset-0 bg-white rounded-full transform scale-105 shadow-lg" }),
+                    React.createElement('div', { className: "absolute inset-0 bg-gradient-to-br from-green-50 to-green-100 rounded-full" }),
+                    React.createElement('img', { src: "https://horizons-cdn.hostinger.com/22d00631-1e52-463c-8da4-ed12a91d0c2f/1ff028768c42dabc835d341184af2c61.jpg", alt: "Paisagem serena de um lago ao entardecer", className: "relative rounded-full w-full h-auto p-2 object-cover aspect-square" })
+                ),
+                React.createElement('div', { className: "mt-10 space-y-4 max-w-md mx-auto" },
+                    React.createElement('div', { className: "bg-white/70 backdrop-blur-sm p-4 rounded-lg flex items-center shadow-md" },
+                        React.createElement('div', { className: "bg-green-100 p-2 rounded-full mr-4" }, React.createElement(UserCheckIcon, null)),
+                        React.createElement('span', { className: "text-gray-700" }, "Verificado por nutricionista")
+                    ),
+                    React.createElement('div', { className: "bg-white/70 backdrop-blur-sm p-4 rounded-lg flex items-center shadow-md" },
+                        React.createElement('div', { className: "bg-green-100 p-2 rounded-full mr-4" }, React.createElement(StarIcon, null)),
+                        React.createElement('span', { className: "text-gray-700" }, "Mais de 1.200 leitoras satisfeitas")
+                    ),
+                    React.createElement('div', { className: "bg-white/70 backdrop-blur-sm p-4 rounded-lg flex items-center shadow-md" },
+                        React.createElement('div', { className: "bg-green-100 p-2 rounded-full mr-4" }, React.createElement(ShieldCheckIcon, null)),
+                        React.createElement('span', { className: "text-gray-700" }, "Garantia de satisfação de 7 dias")
+                    )
+                )
+            ),
+            React.createElement('section', { className: "py-16 px-6 text-center" },
+                React.createElement('h2', { className: "text-4xl md:text-5xl font-bold text-[#00684A]" }, "O Que Você Vai Encontrar"),
+                React.createElement('p', { className: "mt-4 text-lg text-gray-600 max-w-xl mx-auto" }, "Coma sem medo, aproveite cada mordida e sinta seu corpo mais leve e saudável"),
+                React.createElement('div', { className: "mt-10 bg-gradient-to-br from-green-50 to-white p-8 rounded-2xl shadow-lg max-w-md mx-auto text-left" },
+                    React.createElement('p', { className: "text-2xl text-[#00684A] font-semibold" }, "+50 Receitas"),
+                    React.createElement('h3', { className: "text-4xl text-[#00684A] font-bold" }, "Exclusivas:"),
+                    React.createElement('ul', { className: "mt-6 space-y-5" },
+                        React.createElement('li', { className: "flex items-center text-lg" }, React.createElement(BookOpenIcon, { className: "w-7 h-7 mr-4 text-[#00684A]" }), " Pães e bolos sem glúten 🥖"),
+                        React.createElement('li', { className: "flex items-center text-lg" }, React.createElement(ShoppingBagIcon, { className: "w-7 h-7 mr-4 text-[#00684A]" }), " Sobremesas sem açúcar 🍫"),
+                        React.createElement('li', { className: "flex items-center text-lg" }, React.createElement(UtensilsIcon, { className: "w-7 h-7 mr-4 text-[#00684A]" }), " Refeições completas e leves 🥗"),
+                        React.createElement('li', { className: "flex items-center text-lg" }, React.createElement(CookieIcon, { className: "w-7 h-7 mr-4 text-[#00684A]" }), " Lanches e cookies práticos 🍪")
+                    )
+                )
+            ),
+            React.createElement('section', { className: "py-16 px-6 text-center" },
+                React.createElement('h2', { className: "text-4xl md:text-5xl font-bold text-[#00684A] mb-10" }, "Bônus Especiais"),
+                React.createElement('div', { className: "space-y-8 max-w-md mx-auto" },
+                    React.createElement(BonusCard, { icon: React.createElement(BookOpenIcon, { className: "w-10 h-10" }), title: "Guia de Substituições Inteligentes", description: "Aprenda a adaptar qualquer receita tradicional." }),
+                    React.createElement(BonusCard, { icon: React.createElement(CalendarIcon, { className: "w-10 h-10" }), title: "Planner de Reeducação Alimentar", description: "Organize sua semana leve e funcional." }),
+                    React.createElement(BonusCard, { icon: React.createElement(LightbulbIcon, { className: "w-10 h-10" }), title: "Mini eBook de Lanches Rápidos", description: "15 ideias prontas em menos de 10 minutos." })
+                )
+            ),
+            React.createElement('section', { className: "bg-[#00684A] text-white py-16 px-6 text-center" },
+                React.createElement('h2', { className: "text-3xl md:text-4xl font-bold leading-tight" }, "Quero Comer Sem Culpa Agora e Receber o Bônus GRÁTIS!"),
+                React.createElement('p', { className: "mt-6 text-lg max-w-2xl mx-auto" }, "As receitas certas mudam tudo — corpo, mente e autoestima. Baixe agora o eBook “Receitas Que Parecem de Verdade” e descubra o sabor da liberdade!"),
+                React.createElement('a', { href: "https://dashboard.render.com/", target: "_blank", rel: "noopener noreferrer", className: "inline-block mt-8 bg-white text-[#00684A] font-bold text-xl py-4 px-10 rounded-full shadow-lg transition-transform hover:scale-105" }, "Quero Começar Agora"),
+                React.createElement('p', { className: "mt-4 flex items-center justify-center text-sm" }, React.createElement(ShieldCheckIcon, { className: "w-5 h-5 mr-2" }), "Garantia de 7 dias e compra 100% segura.")
+            )
+          ),
+          React.createElement(Footer, null),
+          React.createElement(StickyCTA, null)
+        );
+      };
+
+      // --- Mount Application ---
+      const rootElement = document.getElementById('root');
+      if (rootElement) {
+        const root = ReactDOM.createRoot(rootElement);
+        root.render(React.createElement(React.StrictMode, null, React.createElement(App, null)));
+      }
+    </script>
+  </body>
+</html>
